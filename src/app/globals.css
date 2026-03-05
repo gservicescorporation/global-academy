@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #16215a;
+  --color-primary-500: #002f7b;
+  --color-secondary: #f8f8f8;
+  --color-primary-gray: #757575;
+  --color-primary-black: #393939;
+}
+
+.primary-title {
+  @apply px-4 py-2 bg-primary/14 w-fit rounded-md text-primary font-semibold text-sm;
+}
+
+.primary-description {
+  @apply text-primary-gray max-lg:text-justify;
+}
+
+.secondary-title {
+  @apply px-4 py-2 bg-white/14 w-fit rounded-md text-white font-semibold text-sm;
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+  @apply cursor-pointer hover:opacity-80;
+}
+
+.primary-btn {
+  @apply bg-primary cursor-pointer hover:bg-transparent border border-primary hover:text-primary text-white transition-colors duration-300 max-lg:text-sm;
+}
+
+.secondary-btn {
+  @apply hover:bg-primary cursor-pointer bg-white border border-primary text-primary hover:text-white transition-colors duration-300 max-lg:text-sm;
+}
+
+.primary-input {
+  @apply px-4 py-2 bg-secondary rounded-md outline-none;
+}
+
+.primary-label {
+  @apply w-full text-gray-500 flex flex-col gap-1;
+}
+
+.swiper-button-disabled {
+  @apply opacity-65 cursor-not-allowed;
+}
