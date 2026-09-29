@@ -71,7 +71,7 @@ export default function Iniciatives() {
             onClick={() => {
               scrollToSection("activities", "start");
             }}
-            className="max-lg:text-sm hover:bg-white transition-colors duration-300 cursor-pointer font-semibold px-8 py-4 rounded-full text-white hover:text-primary bg-primary border border-primary">
+            className="secondary-btn max-lg:text-sm !bg-white/10 !text-white !border-white/70 hover:!bg-white hover:!text-primary">
             Ver Actividades
           </button>
         </div>

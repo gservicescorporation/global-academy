@@ -51,8 +51,8 @@ export default function Courses() {
       />
 
       <ul className="flex min-h-screen flex-wrap gap-x-3 gap-y-8 items-center px-8 py-12 justify-start max-lg:justify-center max-w-5xl w-full">
-        <div className="flex justify-between gap-8 h-10 max-lg:gap-2 w-full">
-          <div className="w-4/5 bg-gray-100 rounded-md py-1 px-5 flex justify-between items-center gap-2">
+        <div className="flex justify-between gap-8 h-11 max-lg:gap-2 w-full">
+          <div className="w-4/5 bg-white ring-1 ring-black/5 rounded-full py-1 px-5 flex justify-between items-center gap-2 shadow-sm">
             <input
               type="text"
               id="search"
@@ -61,23 +61,23 @@ export default function Courses() {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <IoIosSearch className="text-gray-500" />
+            <IoIosSearch className="text-primary-gray" />
           </div>
 
           <div className="relative w-1/5">
             <button
               onClick={() => setFilterOpen(!isFilterOpen)}
-              className="w-full h-full hover:cursor-pointer bg-gray-100 rounded-md flex justify-center items-center gap-1 group hover:text-white hover:bg-primary transition-colors duration-500">
+              className="w-full h-full hover:cursor-pointer bg-white ring-1 ring-black/5 shadow-sm rounded-full flex justify-center items-center gap-1 group hover:text-white hover:bg-primary-500 transition-colors duration-300">
               <CiFilter className="group-hover:text-white" />
               <span className="max-lg:hidden">Filtrar</span>
             </button>
 
             {isFilterOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-white border rounded-md shadow-lg p-3">
-                <div className="mb-2">
-                  <label className="text-sm">Carga Horária</label>
+              <div className="absolute right-0 mt-2 w-48 bg-white ring-1 ring-black/5 rounded-xl shadow-xl p-4 z-10">
+                <div className="mb-3">
+                  <label className="text-sm text-primary-gray">Carga Horária</label>
                   <select
-                    className="w-full border rounded p-1"
+                    className="w-full border border-black/10 rounded-lg p-1.5 mt-1 outline-none focus:border-primary-500"
                     value={selectedWorkload}
                     onChange={(e) => setSelectedWorkload(e.target.value)}>
                     <option value="">Todas</option>
@@ -90,9 +90,9 @@ export default function Courses() {
                 </div>
 
                 <div>
-                  <label className="text-sm">Certificação</label>
+                  <label className="text-sm text-primary-gray">Certificação</label>
                   <select
-                    className="w-full border rounded p-1"
+                    className="w-full border border-black/10 rounded-lg p-1.5 mt-1 outline-none focus:border-primary-500"
                     value={selectedCertificate}
                     onChange={(e) => setSelectedCertificate(e.target.value)}>
                     <option value="">Todas</option>

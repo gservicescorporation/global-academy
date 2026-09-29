@@ -29,22 +29,22 @@ export default function Product({
   coverImg: string;
 }) {
   return (
-    <div className="rounded-xl max-w-78 w-full mx-auto shadow">
+    <div className="surface-card overflow-hidden max-w-78 w-full mx-auto">
       <Image
         src={coverImg}
         alt={"/"}
         width={300}
         height={190}
-        className="rounded-t-xl w-full object-cover object-left-top h-50"
+        className="w-full object-cover object-left-top h-50"
       />
 
-      <div className="bg-secondary px-6 py-4 flex flex-col gap-3 rounded-b-xl w-full text-left h-56 justify-between">
+      <div className="bg-white px-6 py-4 flex flex-col gap-3 w-full text-left h-56 justify-between">
         <div className="flex flex-col gap-2">
           <h2 className="text-primary-500 font-bold max-lg:text-sm">
             {title.toUpperCase()}
           </h2>
 
-          <p className="text-sm max-lg:text-xs text-gray-400">
+          <p className="text-sm max-lg:text-xs text-primary-gray">
             {description.length > 100
               ? description.slice(0, 100) + "..."
               : description}

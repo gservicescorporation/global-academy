@@ -1,6 +1,4 @@
-import { Description } from "@radix-ui/react-dialog";
 import Link from "next/link";
-import { title } from "process";
 import React from "react";
 import { FaRightLong } from "react-icons/fa6";
 
@@ -34,34 +32,35 @@ export default function HowToSignUp() {
     },
   ];
 
-  
+
   return (
-    <div className="lg:py-18 lg:px-24 max-lg:px-8 max-lg:py-12 bg-primary w-full flex justify-center">
-      <div className="text-center text-white items-center flex flex-col gap-14 max-lg:gap-8 w-full max-w-6xl">
-        <div>
-          <h1 className="text-2xl font-bold max-lg:text-lg">
+    <div className="lg:py-20 lg:px-24 max-lg:px-8 max-lg:py-14 bg-secondary w-full flex justify-center">
+      <div className="text-center items-center flex flex-col gap-14 max-lg:gap-8 w-full max-w-6xl">
+        <div className="flex flex-col items-center gap-3">
+          <span className="primary-title">Como funciona</span>
+          <h1 className="text-3xl font-bold max-lg:text-xl text-primary-black">
             Como fazer a inscrição?
           </h1>
-          <p>Siga os passos abaixo, aproveite e faça já a sua inscrição.</p>
+          <p className="text-primary-gray">Siga os passos abaixo, aproveite e faça já a sua inscrição.</p>
         </div>
 
-        <ul className="flex-wrap flex gap-12 items-center justify-center">
+        <ul className="flex-wrap flex gap-8 items-center justify-center">
           {steps.map((item, index) => (
             <React.Fragment key={index}>
-              <li className="flex flex-col gap-2 items-center justify-center bg-secondary text-primary rounded-2xl py-4 px-6 w-64 h-52">
-                <span className="bg-primary p-2 rounded-full text-lg text-secondary font-semibold w-12 h-12">
+              <li className="surface-card flex flex-col gap-2 items-center justify-center text-primary-black py-4 px-6 w-64 h-52">
+                <span className="flex items-center justify-center bg-linear-to-br from-primary-500 to-primary p-2 rounded-full text-lg text-white font-semibold w-12 h-12">
                   {item.stepNumber}
                 </span>
 
                 <div className="flex flex-col">
                   <span className="text-lg font-semibold">{item.title}</span>
 
-                  <span className="text-sm">{item.description}</span>
+                  <span className="text-sm text-primary-gray">{item.description}</span>
                 </div>
               </li>
 
               {steps && (index + 1) % 3 !== 0 && index < steps.length - 1 && (
-                <FaRightLong className="text-xl max-lg:hidden" />
+                <FaRightLong className="text-xl max-lg:hidden text-primary-300" />
               )}
             </React.Fragment>
           ))}
@@ -69,7 +68,7 @@ export default function HowToSignUp() {
 
         <Link
           href="/courses"
-          className="bg-white border border-white hover:bg-primary hover:text-white text-lg px-8 py-2 rounded-md text-primary font-bold animate-pulse hover:animate-none cursor-pointer transition-colors duration-300">
+          className="primary-btn text-lg px-8 py-2.5">
           Aderir à uma formação
         </Link>
       </div>

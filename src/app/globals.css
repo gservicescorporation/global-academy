@@ -1,15 +1,25 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #16215a;
-  --color-primary-500: #002f7b;
-  --color-secondary: #f8f8f8;
-  --color-primary-gray: #757575;
-  --color-primary-black: #393939;
+  /* Light, airy blue system — a soft, near-white canvas with a bright azure
+     accent; deep royal blue reserved for headings/text and the header/footer
+     bookends rather than large solid section fills. */
+  --color-primary: #1e2a5c;
+  --color-primary-500: #3b6dff;
+  --color-primary-400: #6c93ff;
+  --color-primary-300: #a9c1ff;
+  --color-primary-100: #eef3ff;
+  --color-secondary: #f8faff;
+  --color-primary-gray: #64748b;
+  --color-primary-black: #1f2937;
+}
+
+body {
+  background-color: var(--color-secondary);
 }
 
 .primary-title {
-  @apply px-4 py-2 bg-primary/14 w-fit rounded-md text-primary font-semibold text-sm;
+  @apply px-4 py-1.5 bg-primary-100 w-fit rounded-full text-primary-500 font-semibold text-xs tracking-wide uppercase;
 }
 
 .primary-description {
@@ -17,7 +27,7 @@
 }
 
 .secondary-title {
-  @apply px-4 py-2 bg-white/14 w-fit rounded-md text-white font-semibold text-sm;
+  @apply px-4 py-1.5 bg-white/10 backdrop-blur-sm w-fit rounded-full text-white font-semibold text-xs tracking-wide uppercase;
 }
 
 .swiper-button-next,
@@ -26,15 +36,16 @@
 }
 
 .primary-btn {
-  @apply bg-primary cursor-pointer hover:bg-transparent border border-primary hover:text-primary text-white transition-colors duration-300 max-lg:text-sm;
+  background-image: linear-gradient(135deg, var(--color-primary-500), var(--color-primary));
+  @apply text-white font-semibold rounded-full px-5 py-2.5 shadow-lg shadow-primary-500/25 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-primary-500/30 cursor-pointer max-lg:text-sm;
 }
 
 .secondary-btn {
-  @apply hover:bg-primary cursor-pointer bg-white border border-primary text-primary hover:text-white transition-colors duration-300 max-lg:text-sm;
+  @apply bg-white border-2 border-primary-500 text-primary-500 font-semibold rounded-full px-5 py-2.5 transition-all duration-300 hover:bg-primary-500 hover:text-white hover:-translate-y-0.5 cursor-pointer max-lg:text-sm;
 }
 
 .primary-input {
-  @apply px-4 py-2 bg-secondary rounded-md outline-none;
+  @apply px-4 py-2.5 bg-secondary rounded-xl outline-none border border-transparent transition-colors duration-200 focus:border-primary-500 focus:bg-white;
 }
 
 .primary-label {
@@ -43,4 +54,8 @@
 
 .swiper-button-disabled {
   @apply opacity-65 cursor-not-allowed;
+}
+
+.surface-card {
+  @apply bg-white rounded-2xl shadow-sm shadow-primary/5 ring-1 ring-black/5 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary-500/10;
 }

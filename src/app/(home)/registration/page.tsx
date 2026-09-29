@@ -2,22 +2,19 @@
 
 import { coursesData } from "@/app/data/coursesData";
 import HeroTitle from "@/app/ui/HeroTitle";
-import countries from "world-countries";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { api } from "@/api/config";
 import { ToastContainer, toast } from "react-toastify";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import PaymentStep from "./components/PaymentStep";
 
 type InputValues = {
   fullname: string;
   birthdate: Date;
   docId: string;
-  country: string;
-  province: string;
   termsConditions: string;
   email: string;
-  address: string;
   course: string;
   phone: string;
 };
@@ -33,10 +30,9 @@ function isValidBirthdate(dateString: Date) {
 
 export default function Registration() {
   const [loading, setLoading] = useState(false);
-  const formattedCountries = countries.map((country) => ({
-    label: country.name.common,
-    value: country.cca2,
-  }));
+  const [paymentInfo, setPaymentInfo] = useState<{ amount: number; mobileNumber: string } | null>(
+    null
+  );
 
   const {
     register,
@@ -50,21 +46,27 @@ export default function Registration() {
     try {
       setLoading(true);
       const response = await api.post("/academy/registration", {
-        address: data.address,
+        // O site é focado em Angola (o telefone já só aceita números +244),
+        // por isso país/província/endereço deixaram de ser pedidos ao aluno.
+        address: "",
         termsConditions: data.termsConditions,
         bornDate: data.birthdate,
-        country: data.country,
+        country: "AO",
         course: data.course,
         docId: data.docId,
         email: data.email,
         fullName: data.fullname,
         phoneNumber: data.phone,
-        province: data.province,
+        province: "",
       });
 
       if (response.status === 200) {
-        toast.success("Pré-inscrição feita com sucesso, reencaminharemos você para o nosso WhatsApp.");
-        router.push("https://wa.me/+244941064919")
+        toast.success("Pré-inscrição feita com sucesso. Falta concluir o pagamento.");
+        const selectedCourse = coursesData.find((item) => item.name === data.course);
+        setPaymentInfo({
+          amount: selectedCourse?.price ?? 0,
+          mobileNumber: data.phone,
+        });
       }
     } catch (error: any) {
       toast.error(error.message);
@@ -85,6 +87,13 @@ export default function Registration() {
       />
 
       <div className="max-w-6xl w-full py-8 max-lg:px-8">
+        {paymentInfo ? (
+          <PaymentStep
+            amount={paymentInfo.amount}
+            mobileNumber={paymentInfo.mobileNumber}
+            onConfirmed={() => router.push("https://wa.me/+244941064919")}
+          />
+        ) : (
         <form
           className="w-full flex flex-col gap-4"
           onSubmit={handleSubmit(onSubmit)}>
@@ -177,57 +186,6 @@ export default function Registration() {
             </label>
           </div>
 
-          <div className="flex w-full gap-3 max-lg:flex-col">
-            <label className="primary-label">
-              País
-              <div className="primary-input">
-                <select
-                  className="w-full outline-none"
-                  {...register("country", {
-                    required: "País é obrigatório",
-                  })}>
-                  <option value="">Selecione o seu país</option>
-                  {formattedCountries.map((country) => (
-                    <option value={country.value}>{country.label}</option>
-                  ))}
-                </select>
-              </div>
-              <span className="text-xs text-red-600">
-                {errors.country && errors.country.message}
-              </span>
-            </label>
-
-            <label className="primary-label">
-              Província
-              <input
-                type="text"
-                {...register("province", {
-                  required: "Província é obrigatório",
-                })}
-                placeholder="Insira o nome da sua província"
-                className="primary-input"
-              />
-              <span className="text-xs text-red-600">
-                {errors.province && errors.province.message}
-              </span>
-            </label>
-          </div>
-
-          <label className="primary-label">
-            Endereço
-            <input
-              type="text"
-              {...register("address", {
-                required: "Endereço é obrigatório",
-              })}
-              placeholder="Ex.: São Paulo, Luanda, Angola"
-              className="primary-input"
-            />
-            <span className="text-xs text-red-600">
-              {errors.address && errors.address.message}
-            </span>
-          </label>
-
           <label className="primary-label">
             Curso
             <div className="primary-input">
@@ -278,6 +236,7 @@ export default function Registration() {
             {loading ? "Enviando..." : "Enviar"}
           </button>
         </form>
+        )}
       </div>
     </section>
   );

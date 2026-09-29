@@ -28,9 +28,9 @@ export default function AboutCourse({
     <section className="flex flex-col justify-center items-center lg:py-8 pb-8">
       <div className="max-w-6xl flex flex-col w-full lg:gap-4">
         <div
-          className={`w-full relative h-120 bg-cover max-lg:bg-center rounded-md`}>
+          className={`w-full relative h-120 bg-cover max-lg:bg-center rounded-2xl overflow-hidden`}>
           {course?.images && <SwiperComponent images={course.images} />}
-          <div className="w-1/2 z-30 absolute left-0 top-0 max-lg:w-full h-full lg:rounded-r-[100px] lg:rounded-l-md bg-primary/50 backdrop-blur-xs flex flex-col p-12 gap-4 text-white justify-center">
+          <div className="w-1/2 z-30 absolute left-0 top-0 max-lg:w-full h-full lg:rounded-r-[100px] bg-primary/50 backdrop-blur-xs flex flex-col p-12 gap-4 text-white justify-center">
             <div>
               <p className="max-lg:text-sm">FORMAÇÃO EXECUTIVA</p>
               <h1 className="text-3xl max-lg:text-xl font-bold">
@@ -123,7 +123,7 @@ export default function AboutCourse({
                         alt={teacher.name}
                         width={136}
                         height={100}
-                        className="rounded-md h-32 max-lg:h-64 max-lg:w-full min-w-34 object-cover object-top"
+                        className="rounded-xl h-32 max-lg:h-64 max-lg:w-full min-w-34 object-cover object-top"
                       />
                     ) : (
                       <Image
@@ -131,7 +131,7 @@ export default function AboutCourse({
                         alt={teacher.name}
                         width={136}
                         height={100}
-                        className="rounded-md h-32 max-lg:h-64 max-lg:w-full min-w-34 object-cover object-top"
+                        className="rounded-xl h-32 max-lg:h-64 max-lg:w-full min-w-34 object-cover object-top"
                       />
                     )}
 
@@ -154,7 +154,7 @@ export default function AboutCourse({
               <div className="flex flex-wrap w-full gap-2 items-center">
                 {course?.modules?.map((item, index) => (
                   <React.Fragment key={index}>
-                    <div className="flex justify-center items-center lg:w-54 w-full h-31 gap-4 p-4 rounded-md bg-primary/14 text-center">
+                    <div className="flex justify-center items-center lg:w-54 w-full h-31 gap-4 p-4 rounded-2xl bg-primary-100 text-center">
                       <p className="font-bold text-sm text-primary-500">
                         {item.toUpperCase()}
                       </p>
@@ -187,8 +187,13 @@ export default function AboutCourse({
             </div>
           </div>
 
-          <aside className="lg:w-1/3 h-fit lg:rounded-md flex-col flex bg-white shadow lg:sticky lg:top-22">
-            <nav className="p-4 lg:rounded-t-lg text-center bg-primary text-white font-bold">
+          <aside className="lg:w-1/3 h-fit lg:rounded-2xl overflow-hidden flex-col flex bg-white ring-1 ring-black/5 shadow-sm lg:sticky lg:top-22">
+            <nav
+              className="p-4 text-center text-white font-bold"
+              style={{
+                backgroundImage:
+                  "linear-gradient(135deg, var(--color-primary-500), var(--color-primary))",
+              }}>
               DETALHES DO CURSO
             </nav>
             <ul className="px-8 pt-2 pb-6 text-primary-500 w-full flex flex-col gap-2">
@@ -219,7 +224,7 @@ export default function AboutCourse({
 
               <Link
                 href={"/registration"}
-                className="text-center primary-btn px-4 py-2 rounded-md w-full max-lg:text-xs">
+                className="text-center primary-btn w-full justify-center max-lg:text-xs">
                 Inscrever-se
               </Link>
             </ul>

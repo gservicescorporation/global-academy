@@ -84,10 +84,10 @@ export default function Page({
 
       <div className="max-w-6xl w-full flex flex-col py-8 max-lg:p-6 gap-4 max-lg:gap-2">
         <h1 className="text-3xl max-lg:text-xl font-bold text-primary-500">
-          {iniciative.name}?
+          {iniciative.name}
         </h1>
 
-        <p className="text-gray-500 max-lg:text-justify">
+        <p className="text-primary-gray max-lg:text-justify">
           {iniciative.description}
         </p>
       </div>
