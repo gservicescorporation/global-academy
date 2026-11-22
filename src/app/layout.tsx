@@ -1,10 +1,10 @@
 import type { Metadata, Viewport } from 'next';
-import { Instrument_Serif, Plus_Jakarta_Sans } from 'next/font/google';
+import { Inter, Inter_Tight } from 'next/font/google';
 import { getSettings } from '@/lib/queries';
 import './globals.css';
 
-const jakarta = Plus_Jakarta_Sans({ subsets: ['latin'], weight: ['400', '500', '600', '700', '800'], variable: '--font-jakarta', display: 'swap' });
-const instrument = Instrument_Serif({ subsets: ['latin'], weight: '400', style: ['normal', 'italic'], variable: '--font-instrument', display: 'swap' });
+const display = Inter_Tight({ subsets: ['latin'], weight: ['500', '600', '700'], variable: '--font-display', display: 'swap' });
+const body = Inter({ subsets: ['latin'], weight: ['400', '500', '600', '700'], variable: '--font-body', display: 'swap' });
 
 export async function generateMetadata(): Promise<Metadata> {
   const s = await getSettings();
@@ -37,11 +37,11 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export const viewport: Viewport = { width: 'device-width', initialScale: 1, viewportFit: 'cover', themeColor: '#070b16' };
+export const viewport: Viewport = { width: 'device-width', initialScale: 1, viewportFit: 'cover', themeColor: '#f5faff' };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pt-AO" suppressHydrationWarning className={`${jakarta.variable} ${instrument.variable}`}>
+    <html lang="pt-AO" suppressHydrationWarning className={`${display.variable} ${body.variable}`}>
       <head>
         <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
       </head>

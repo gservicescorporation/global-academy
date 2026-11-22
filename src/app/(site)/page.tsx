@@ -6,6 +6,7 @@ import { Areas } from '@/components/home/Areas';
 import { FinalCta } from '@/components/home/FinalCta';
 import { Manifesto } from '@/components/home/Manifesto';
 import { Testimonials } from '@/components/home/Testimonials';
+import { TickerBand } from '@/components/home/TickerBand';
 import { Trainers } from '@/components/home/Trainers';
 import { Upcoming } from '@/components/home/Upcoming';
 import { Why } from '@/components/home/Why';
@@ -30,6 +31,8 @@ import { lines } from '@/lib/utils';
 
 export const revalidate = 300;
 
+const HERO_PHOTOS = [2, 4, 3, 1].map((n) => `/images/hero/formacao-${n}.jpg`);
+
 export default async function Home() {
   const [s, slides, featured, upcoming, highlights, why, partners, areas, trainers, testimonials] = await Promise.all([
     getSettings(),
@@ -45,7 +48,8 @@ export default async function Home() {
   ]);
 
   // Sem destaques no painel, o topo usa o título das definições (e a galeria/imagem de fundo, se houver).
-  const heroSlides: HeroSlideData[] = slides.length
+  // Fotos de formação incluídas no projeto cobrem qualquer destaque sem imagem.
+  const heroSlides: HeroSlideData[] = (slides.length
     ? slides
     : (() => {
         const images = lines(s.hero_images);
@@ -55,33 +59,41 @@ export default async function Home() {
           link: '/cursos',
           buttonText: s.hero_cta_primary,
         };
-        const list = images.length ? images : [s.hero_image || ''];
+        const list = images.length ? images : s.hero_image ? [s.hero_image] : HERO_PHOTOS;
         return list.map((imageUrl, i) => ({ id: `fallback-${i}`, imageUrl, ...base }));
-      })();
+      })()
+  ).map((slide, i) => ({ ...slide, imageUrl: slide.imageUrl || HERO_PHOTOS[i % HERO_PHOTOS.length] }));
 
   return (
     <main>
-      <HeroSlider slides={heroSlides} eyebrow={s.hero_eyebrow} secondary={{ href: '/empresas', label: s.hero_cta_secondary || 'Formação para empresas' }} />
+      <HeroSlider
+        slides={heroSlides}
+        eyebrow={s.hero_eyebrow}
+        secondary={{ href: '/empresas', label: s.hero_cta_secondary || 'Formação para empresas' }}
+        chips={highlights.slice(0, 2).map((h) => ({ value: h.value, label: h.label }))}
+      />
+
+      <TickerBand items={featured.map((c) => c.title)} />
 
       <Manifesto text={s.manifesto} stats={highlights} />
 
       {featured.length > 0 && (
         <HorizontalPin
-          className="section-y bg-ink text-white lg:py-0"
+          className="section-y bg-brand-50 text-ink lg:py-0"
           intro={
             <div>
-              <span data-reveal="fade" className="eyebrow text-accent">
+              <span data-reveal="fade" className="eyebrow bg-white">
                 Cursos em destaque
               </span>
               <SplitReveal className="display-lg mt-6 text-balance">
-                <Accent text={s.featured_title} className="serif-accent text-white/60" />
+                <Accent text={s.featured_title} />
               </SplitReveal>
               {s.featured_subtitle && (
-                <p data-reveal className="mt-6 max-w-md text-lg text-white/65">
+                <p data-reveal className="mt-6 max-w-md text-lg text-tertiary">
                   {s.featured_subtitle}
                 </p>
               )}
-              <Link data-reveal href="/cursos" className="btn btn-light mt-10">
+              <Link data-reveal href="/cursos" className="btn btn-dark mt-10">
                 Ver todos os cursos <ArrowUpRight className="h-4 w-4" aria-hidden />
               </Link>
             </div>
@@ -89,12 +101,12 @@ export default async function Home() {
           outro={
             <Link
               href="/cursos"
-              className="group hidden h-full min-h-[24rem] w-full flex-col items-center justify-center gap-4 rounded-[1.75rem] border border-dashed border-white/20 text-center transition-colors hover:border-accent lg:flex"
+              className="group hidden h-full min-h-[24rem] w-full flex-col items-center justify-center gap-4 rounded-[1.75rem] border-2 border-dashed border-brand-200 text-center transition-colors hover:border-brand-500 hover:bg-white lg:flex"
             >
-              <span className="flex h-20 w-20 items-center justify-center rounded-full bg-accent text-ink transition-transform duration-500 group-hover:scale-110">
+              <span className="flex h-20 w-20 items-center justify-center rounded-full bg-brand-600 text-white transition-transform duration-500 group-hover:scale-110">
                 <ArrowUpRight className="h-8 w-8 transition-transform duration-500 group-hover:rotate-45" aria-hidden />
               </span>
-              <span className="text-lg font-semibold">Ver todos os cursos</span>
+              <span className="font-head text-lg font-bold">Ver todos os cursos</span>
             </Link>
           }
         >

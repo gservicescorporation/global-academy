@@ -1,7 +1,6 @@
 'use client';
 
 import { ArrowLeft, ArrowRight, Building2, Check, Minus, Plus, User } from 'lucide-react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useActionState, useMemo, useRef, useState } from 'react';
 import { enroll, type FormState } from '@/app/actions';
@@ -16,13 +15,7 @@ export interface EnrollSession {
   remaining: number;
 }
 
-export interface EnrollMethod {
-  id: string;
-  name: string;
-  type: 'express' | 'reference' | 'transfer' | 'cash';
-}
-
-const STEPS = ['Turma', 'Dados', 'Pagamento'] as const;
+const STEPS = ['Turma', 'Dados', 'Confirmar'] as const;
 const FIELD_STEP: Record<string, number> = {
   sessionId: 0,
   participants: 0,
@@ -32,31 +25,18 @@ const FIELD_STEP: Record<string, number> = {
   company: 1,
   taxId: 1,
   isCompany: 1,
-  paymentMethodId: 2,
-};
-const METHOD_LOGO: Partial<Record<EnrollMethod['type'], { src: string; alt: string }>> = {
-  express: { src: '/images/payments/express.png', alt: 'Multicaixa Express' },
-  reference: { src: '/images/payments/referencia.png', alt: 'Multicaixa' },
-};
-const METHOD_HINT: Record<EnrollMethod['type'], string> = {
-  express: 'Recebe o pedido no telemóvel e aprova na aplicação.',
-  reference: 'Recebe entidade e referência para pagar no ATM ou no homebanking.',
-  transfer: 'Recebe o IBAN e envia o comprovativo.',
-  cash: 'Paga na secretaria antes do início.',
 };
 
 export function EnrollForm({
   slug,
   courseTitle,
   sessions,
-  methods,
   price,
   currency,
 }: {
   slug: string;
   courseTitle: string;
   sessions: EnrollSession[];
-  methods: EnrollMethod[];
   price: number;
   currency: string;
 }) {
@@ -65,7 +45,6 @@ export function EnrollForm({
   const [sessionId, setSessionId] = useState(sessions[0]?.id ?? '');
   const [wanted, setParticipants] = useState(1);
   const [isCompany, setIsCompany] = useState(false);
-  const [methodId, setMethodId] = useState(methods[0]?.id ?? '');
   const [localErrors, setLocalErrors] = useState<Record<string, string>>({});
   const root = useRef<HTMLDivElement>(null);
   const stepRefs = useRef<(HTMLFieldSetElement | null)[]>([]);
@@ -128,12 +107,12 @@ export function EnrollForm({
       {/* Indicador de passos */}
       <ol className="relative mb-10 grid grid-cols-3" aria-label="Passos da inscrição">
         <span aria-hidden className="absolute top-4 right-[16.66%] left-[16.66%] h-px bg-line" />
-        <span aria-hidden data-step-bar className="absolute top-4 left-[16.66%] h-px w-[66.66%] origin-left scale-x-0 bg-royal" />
+        <span aria-hidden data-step-bar className="absolute top-4 left-[16.66%] h-px w-[66.66%] origin-left scale-x-0 bg-brand-500" />
         {STEPS.map((label, i) => (
           <li key={label} className="relative flex flex-col items-center gap-2 text-center" aria-current={i === step ? 'step' : undefined}>
             <span
               className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-semibold ring-1 transition-colors duration-500 ${
-                i < step ? 'bg-royal text-white ring-royal' : i === step ? 'bg-ink text-white ring-ink' : 'bg-paper text-tertiary ring-line'
+                i < step ? 'bg-brand-300 text-white ring-brand-300' : i === step ? 'bg-brand-600 text-white ring-brand-600' : 'bg-paper text-tertiary ring-line'
               }`}
             >
               {i < step ? <Check className="h-4 w-4" aria-hidden /> : i + 1}
@@ -161,7 +140,7 @@ export function EnrollForm({
             {sessions.map((s) => (
               <label
                 key={s.id}
-                className="group flex cursor-pointer items-center gap-4 rounded-2xl bg-paper p-5 ring-1 ring-line transition-all has-[:checked]:ring-2 has-[:checked]:ring-ink has-[:focus-visible]:ring-accent"
+                className="group flex cursor-pointer items-center gap-4 rounded-2xl bg-paper p-5 ring-1 ring-line transition-all has-[:checked]:ring-2 has-[:checked]:ring-brand-600 has-[:focus-visible]:ring-brand-400"
               >
                 <input
                   type="radio"
@@ -172,14 +151,14 @@ export function EnrollForm({
                   className="sr-only"
                   required
                 />
-                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full ring-1 ring-line group-has-[:checked]:bg-ink group-has-[:checked]:ring-ink">
+                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full ring-1 ring-line group-has-[:checked]:bg-brand-600 group-has-[:checked]:ring-brand-600">
                   <span className="h-2 w-2 rounded-full bg-white opacity-0 group-has-[:checked]:opacity-100" />
                 </span>
                 <span className="flex-1">
                   <span className="block font-semibold text-ink">{s.dates}</span>
                   <span className="block text-sm text-tertiary">{s.location}</span>
                 </span>
-                <span className={`text-sm font-semibold ${s.remaining <= 5 ? 'text-gold' : 'text-tertiary'}`}>
+                <span className={`text-sm font-semibold ${s.remaining <= 5 ? 'text-amber-700' : 'text-tertiary'}`}>
                   {s.remaining} {s.remaining === 1 ? 'vaga' : 'vagas'}
                 </span>
               </label>
@@ -197,7 +176,7 @@ export function EnrollForm({
                 onClick={() => setParticipants((n) => Math.max(1, n - 1))}
                 disabled={participants <= 1}
                 aria-label="Menos um participante"
-                className="flex h-12 w-12 items-center justify-center rounded-full ring-1 ring-line transition-colors hover:bg-ink hover:text-white disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-current"
+                className="flex h-12 w-12 items-center justify-center rounded-full ring-1 ring-line transition-colors hover:bg-brand-600 hover:text-white disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-current"
               >
                 <Minus className="h-4 w-4" aria-hidden />
               </button>
@@ -218,7 +197,7 @@ export function EnrollForm({
                 onClick={() => setParticipants((n) => Math.min(max, n + 1))}
                 disabled={participants >= max}
                 aria-label="Mais um participante"
-                className="flex h-12 w-12 items-center justify-center rounded-full ring-1 ring-line transition-colors hover:bg-ink hover:text-white disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-current"
+                className="flex h-12 w-12 items-center justify-center rounded-full ring-1 ring-line transition-colors hover:bg-brand-600 hover:text-white disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-current"
               >
                 <Plus className="h-4 w-4" aria-hidden />
               </button>
@@ -253,7 +232,7 @@ export function EnrollForm({
                 aria-checked={isCompany === v}
                 onClick={() => setIsCompany(v)}
                 className={`flex min-h-14 items-center justify-center gap-2 rounded-2xl text-sm font-semibold ring-1 transition-colors ${
-                  isCompany === v ? 'bg-ink text-white ring-ink' : 'bg-paper text-ink ring-line hover:ring-ink/30'
+                  isCompany === v ? 'bg-brand-600 text-white ring-brand-600' : 'bg-paper text-ink ring-line hover:ring-brand-300'
                 }`}
               >
                 <Icon className="h-4 w-4" aria-hidden /> {label}
@@ -276,7 +255,7 @@ export function EnrollForm({
               inputMode="tel"
               autoComplete="tel"
               error={errors.phone}
-              hint="Para o Multicaixa Express, use o número associado à aplicação."
+              hint="Ligamos para este número para confirmar a vaga."
             />
           </div>
           <div className="flex justify-between gap-3 pt-2">
@@ -289,33 +268,11 @@ export function EnrollForm({
           </div>
         </fieldset>
 
-        {/* Passo 3 — Pagamento */}
+        {/* Passo 3 — Confirmar */}
         <fieldset ref={(el) => void (stepRefs.current[2] = el)} hidden={step !== 2} className="grid gap-6">
           <legend data-step-title tabIndex={-1} className="mb-2 text-2xl font-semibold tracking-tight text-ink outline-none">
-            Como vai pagar
+            Confirme a inscrição
           </legend>
-          <div className="grid gap-3" role="radiogroup" aria-label="Método de pagamento">
-            {methods.map((m) => {
-              const logo = METHOD_LOGO[m.type];
-              return (
-                <label
-                  key={m.id}
-                  className="group flex cursor-pointer items-center gap-4 rounded-2xl bg-paper p-4 ring-1 ring-line transition-all has-[:checked]:ring-2 has-[:checked]:ring-ink has-[:focus-visible]:ring-accent sm:p-5"
-                >
-                  <input type="radio" name="paymentMethodId" value={m.id} checked={methodId === m.id} onChange={() => setMethodId(m.id)} className="sr-only" required />
-                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full ring-1 ring-line group-has-[:checked]:bg-ink group-has-[:checked]:ring-ink">
-                    <span className="h-2 w-2 rounded-full bg-white opacity-0 group-has-[:checked]:opacity-100" />
-                  </span>
-                  <span className="min-w-0 flex-1">
-                    <span className="block font-semibold text-ink">{m.name}</span>
-                    <span className="block text-sm text-tertiary">{METHOD_HINT[m.type]}</span>
-                  </span>
-                  {logo && <Image src={logo.src} alt={logo.alt} width={64} height={42} className="h-9 w-auto shrink-0" />}
-                </label>
-              );
-            })}
-          </div>
-          {errors.paymentMethodId && <p className="text-sm text-red-700">{errors.paymentMethodId}</p>}
 
           <dl className="grid gap-3 rounded-2xl bg-background p-5 text-sm ring-1 ring-line">
             <div className="flex justify-between gap-4">
@@ -338,7 +295,7 @@ export function EnrollForm({
             </div>
             <div className="flex items-end justify-between gap-4 border-t border-line pt-3">
               <dt className="font-semibold text-ink">Total</dt>
-              <dd className="text-2xl font-bold tracking-tight text-ink">{price > 0 ? formatPrice(total, currency) : 'Sob consulta'}</dd>
+              <dd className="text-2xl font-semibold tracking-tight text-ink">{price > 0 ? formatPrice(total, currency) : 'Sob consulta'}</dd>
             </div>
           </dl>
 
@@ -348,7 +305,7 @@ export function EnrollForm({
             </button>
             <SubmitButton pendingText="A registar…">Confirmar inscrição</SubmitButton>
           </div>
-          <p className="text-xs text-tertiary">A vaga fica reservada ao confirmar e passa a definitiva quando o pagamento é recebido.</p>
+          <p className="text-xs text-tertiary">Não paga nada agora. Depois de confirmar, a nossa equipa contacta-o para validar a vaga e combinar o pagamento.</p>
         </fieldset>
       </form>
     </div>

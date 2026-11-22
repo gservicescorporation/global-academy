@@ -9,12 +9,11 @@ export interface Step {
 }
 
 /**
- * Passos ligados por uma linha que se desenha com o scroll.
- * Desktop: linha horizontal; mobile: vertical à esquerda. Cada passo acende quando a linha lhe chega.
+ * Passos ligados por uma linha ondulada (SVG) que se desenha com o scroll.
+ * Desktop: onda horizontal; mobile: linha vertical. Cada passo acende quando a linha lhe chega.
  */
-export function StepsTimeline({ steps, tone = 'dark' }: { steps: Step[]; tone?: 'dark' | 'light' }) {
+export function StepsTimeline({ steps }: { steps: Step[] }) {
   const root = useRef<HTMLOListElement>(null);
-  const dark = tone === 'dark';
 
   useGSAP(
     () => {
@@ -24,24 +23,22 @@ export function StepsTimeline({ steps, tone = 'dark' }: { steps: Step[]; tone?: 
         const items = gsap.utils.toArray<HTMLElement>('[data-step]');
         if (!motion) {
           items.forEach((el) => el.classList.add('is-active'));
-          gsap.set('[data-step-line]', { scaleX: 1, scaleY: 1 });
+          gsap.set('[data-step-path]', { strokeDashoffset: 0 });
+          gsap.set('[data-step-vline]', { scaleY: 1 });
           return;
         }
-        gsap.fromTo(
-          '[data-step-line]',
-          desktop ? { scaleX: 0, scaleY: 1 } : { scaleY: 0, scaleX: 1 },
-          {
-            scaleX: 1,
-            scaleY: 1,
-            ease: 'none',
-            scrollTrigger: { trigger: root.current, start: desktop ? 'top 70%' : 'top 75%', end: desktop ? 'bottom 55%' : 'bottom 60%', scrub: 0.6 },
-          }
-        );
-        items.forEach((el) => {
+        const scrub = { trigger: root.current, start: desktop ? 'top 75%' : 'top 80%', end: desktop ? 'bottom 60%' : 'bottom 65%', scrub: 0.8 };
+        if (desktop) gsap.fromTo('[data-step-path]', { strokeDashoffset: 1 }, { strokeDashoffset: 0, ease: 'none', scrollTrigger: scrub });
+        else gsap.fromTo('[data-step-vline]', { scaleY: 0 }, { scaleY: 1, ease: 'none', scrollTrigger: scrub });
+
+        items.forEach((el, i) => {
           ScrollTrigger.create({
             trigger: el,
-            start: desktop ? 'top 62%' : 'top 65%',
-            onEnter: () => el.classList.add('is-active'),
+            start: desktop ? `top ${70 - i * 4}%` : 'top 70%',
+            onEnter: () => {
+              el.classList.add('is-active');
+              gsap.fromTo(el.querySelector('[data-step-dot]'), { scale: 0.6 }, { scale: 1, duration: 0.8, ease: 'elastic.out(1, 0.45)' });
+            },
             onLeaveBack: () => el.classList.remove('is-active'),
           });
         });
@@ -51,46 +48,42 @@ export function StepsTimeline({ steps, tone = 'dark' }: { steps: Step[]; tone?: 
     { scope: root }
   );
 
+  const cols = steps.length === 3 ? 'lg:grid-cols-3' : 'lg:grid-cols-4';
+
   return (
-    <ol
-      ref={root}
-      className={`relative mt-16 grid gap-10 pl-10 lg:gap-8 lg:pt-12 lg:pl-0 ${steps.length === 3 ? 'lg:grid-cols-3' : 'lg:grid-cols-4'}`}
-    >
-      <span
-        aria-hidden
-        className={`absolute top-0 bottom-0 left-[11px] w-px lg:top-[11px] lg:right-0 lg:bottom-auto lg:left-0 lg:h-px lg:w-auto ${dark ? 'bg-white/15' : 'bg-line'}`}
-      />
-      <span
-        aria-hidden
-        data-step-line
-        className={`absolute top-0 bottom-0 left-[11px] w-px origin-top lg:top-[11px] lg:right-0 lg:bottom-auto lg:left-0 lg:h-px lg:w-auto lg:origin-left ${
-          dark ? 'bg-accent' : 'bg-royal'
-        }`}
-      />
+    <ol ref={root} className={`relative mt-14 grid gap-8 pl-12 lg:gap-6 lg:pt-20 lg:pl-0 ${cols}`}>
+      {/* Desktop: onda */}
+      <svg aria-hidden className="pointer-events-none absolute top-0 left-0 hidden h-16 w-full lg:block" viewBox="0 0 1000 64" preserveAspectRatio="none">
+        <path d="M0 32 C 125 0, 125 64, 250 32 S 375 0, 500 32 S 625 64, 750 32 S 875 0, 1000 32" fill="none" stroke="var(--color-brand-200)" strokeWidth="3" strokeDasharray="2 10" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
+        <path
+          data-step-path
+          d="M0 32 C 125 0, 125 64, 250 32 S 375 0, 500 32 S 625 64, 750 32 S 875 0, 1000 32"
+          fill="none"
+          stroke="var(--color-brand-500)"
+          strokeWidth="3"
+          strokeLinecap="round"
+          pathLength={1}
+          strokeDasharray="1"
+          strokeDashoffset="1"
+          vectorEffect="non-scaling-stroke"
+        />
+      </svg>
+      {/* Mobile: linha vertical */}
+      <span aria-hidden className="absolute top-2 bottom-2 left-[19px] w-[3px] rounded-full bg-brand-100 lg:hidden" />
+      <span aria-hidden data-step-vline className="absolute top-2 bottom-2 left-[19px] w-[3px] origin-top scale-y-0 rounded-full bg-brand-500 lg:hidden" />
+
       {steps.map((s, i) => (
         <li key={`${s.title}-${i}`} data-step className="group/step relative">
           <span
-            className={`absolute top-1 -left-10 flex h-6 w-6 items-center justify-center rounded-full ring-1 transition-all duration-500 lg:-top-12 lg:left-0 ${
-              dark
-                ? 'bg-ink ring-white/25 group-[.is-active]/step:bg-accent group-[.is-active]/step:ring-accent'
-                : 'bg-paper ring-line group-[.is-active]/step:bg-royal group-[.is-active]/step:ring-royal'
-            }`}
+            data-step-dot
+            className="absolute top-0 -left-12 flex h-10 w-10 items-center justify-center rounded-full bg-white font-head text-sm font-bold text-brand-400 ring-2 ring-brand-100 transition-colors duration-500 group-[.is-active]/step:bg-brand-600 group-[.is-active]/step:text-white group-[.is-active]/step:ring-brand-200 lg:-top-[3.6rem] lg:left-0"
           >
-            <span
-              className={`h-1.5 w-1.5 rounded-full transition-colors duration-500 ${
-                dark ? 'bg-white/40 group-[.is-active]/step:bg-ink' : 'bg-line group-[.is-active]/step:bg-white'
-              }`}
-            />
+            {i + 1}
           </span>
-          <span
-            className={`text-5xl font-bold tracking-tighter transition-colors duration-700 ${
-              dark ? 'text-white/15 group-[.is-active]/step:text-accent/80' : 'text-ink/10 group-[.is-active]/step:text-royal/80'
-            }`}
-          >
-            0{i + 1}
-          </span>
-          <h3 className="mt-3 text-2xl font-semibold">{s.title}</h3>
-          <p className={`mt-2 ${dark ? 'text-white/65' : 'text-tertiary'}`}>{s.text}</p>
+          <div className="rounded-[1.5rem] bg-white p-6 ring-1 ring-line transition-shadow duration-500 group-[.is-active]/step:shadow-lift">
+            <h3 className="font-head text-xl font-semibold tracking-tight text-ink">{s.title}</h3>
+            <p className="mt-2 text-tertiary">{s.text}</p>
+          </div>
         </li>
       ))}
     </ol>

@@ -22,7 +22,7 @@ export default async function AboutPage() {
 
   return (
     <main>
-      <PageHero eyebrow="Sobre a academia" title={<Accent text={s.about_title} className="serif-accent text-white/60" />} text={s.about_subtitle} />
+      <PageHero eyebrow="Sobre a academia" title={<Accent text={s.about_title} />} text={s.about_subtitle} />
 
       <Manifesto text={s.manifesto} stats={highlights} />
 
@@ -33,24 +33,25 @@ export default async function AboutPage() {
       <Trainers trainers={trainers} title={s.trainers_title} text={s.trainers_text} />
 
       {s.parent_company && (
-        <section className="section-y relative overflow-clip bg-ink text-white">
-          <div aria-hidden className="grid-lines pointer-events-none absolute inset-0" />
-          <div className="container-x relative grid items-end gap-10 lg:grid-cols-12">
-            <div className="lg:col-span-8">
-              <span data-reveal="fade" className="eyebrow text-accent">
-                Grupo
-              </span>
-              <SplitReveal className="display-lg mt-6 text-balance">
-                Parte da <span className="serif-accent text-white/60">{s.parent_company}.</span>
-              </SplitReveal>
-              <p data-reveal className="mt-6 max-w-2xl text-lg text-white/65">
-                A academia é a área de formação da {s.parent_company}, que trabalha também em mediação de seguros, eventos e comunicação em Angola.
-              </p>
-            </div>
-            <div className="lg:col-span-4 lg:justify-self-end">
-              <a data-reveal href="https://www.globalsc.ao" target="_blank" rel="noopener noreferrer" className="btn btn-light">
-                Visitar globalsc.ao <ArrowUpRight className="h-4 w-4" aria-hidden />
-              </a>
+        <section className="bg-background py-6">
+          <div className="container-x">
+            <div data-reveal="scale" className="relative grid items-end gap-10 overflow-hidden rounded-[2.5rem] bg-brand-100 p-8 sm:p-14 lg:grid-cols-12">
+              <div aria-hidden className="dots dots-fade pointer-events-none absolute inset-0" />
+              <div aria-hidden className="pointer-events-none absolute -top-24 -right-24 h-72 w-72 rounded-full bg-brand-200 blur-2xl" />
+              <div className="relative lg:col-span-8">
+                <span className="eyebrow bg-white">Grupo</span>
+                <SplitReveal className="display-lg mt-6 text-balance text-ink">
+                  Parte da <span className="hl">{s.parent_company}.</span>
+                </SplitReveal>
+                <p className="mt-6 max-w-2xl text-lg text-tertiary">
+                  A academia é a área de formação da {s.parent_company}, que trabalha também em mediação de seguros, eventos e comunicação em Angola.
+                </p>
+              </div>
+              <div className="relative lg:col-span-4 lg:justify-self-end">
+                <a href="https://www.globalsc.ao" target="_blank" rel="noopener noreferrer" className="btn btn-dark">
+                  Visitar globalsc.ao <ArrowUpRight className="h-4 w-4" aria-hidden />
+                </a>
+              </div>
             </div>
           </div>
         </section>

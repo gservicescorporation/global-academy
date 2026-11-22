@@ -30,7 +30,7 @@ export default async function CalendarPage() {
         eyebrow="Calendário"
         title={
           <>
-            Próximas <span className="serif-accent text-white/60">turmas.</span>
+            Próximas <span className="hl">turmas.</span>
           </>
         }
         text="Datas, local e vagas disponíveis. As turmas são pequenas: quando uma esgota, abrimos nova data."
@@ -60,7 +60,7 @@ export default async function CalendarPage() {
                     <div className="lg:col-span-3">
                       <div className="lg:sticky lg:top-32">
                         <SplitReveal as="h2" className="display-md text-ink">
-                          {MONTHS[m - 1]} <span className="serif-accent text-royal">{y}</span>
+                          {MONTHS[m - 1]} <span className="hl">{y}</span>
                         </SplitReveal>
                         <p className="mt-2 text-sm text-tertiary">
                           {list.length} {list.length === 1 ? 'turma' : 'turmas'}

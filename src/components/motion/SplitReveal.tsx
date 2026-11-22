@@ -21,7 +21,7 @@ export default function SplitReveal({
 	as: Tag = "h2",
 	children,
 	className,
-	by = "lines",
+	by = "words",
 	delay = 0,
 	stagger,
 	immediate = false,
@@ -46,12 +46,15 @@ export default function SplitReveal({
 					gsap.set(el, { visibility: "visible" })
 					const targets =
 						by === "lines" ? self.lines : by === "words" ? self.words : self.chars
+					// Palavras sobem de dentro da máscara com uma ligeira rotação a partir da base.
 					return gsap.from(targets, {
-						yPercent: 115,
-						rotate: by === "lines" ? 2 : 0,
-						duration: by === "chars" ? 0.9 : 1.25,
-						stagger: stagger ?? (by === "lines" ? 0.1 : by === "words" ? 0.04 : 0.018),
-						ease: "expo.out",
+						yPercent: 120,
+						rotate: by === "lines" ? 0 : 6,
+						transformOrigin: "0% 100%",
+						opacity: by === "lines" ? 1 : 0,
+						duration: by === "chars" ? 0.9 : 1.1,
+						stagger: stagger ?? (by === "lines" ? 0.1 : by === "words" ? 0.05 : 0.018),
+						ease: "back.out(1.4)",
 						delay,
 						scrollTrigger: immediate
 							? undefined

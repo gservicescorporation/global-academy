@@ -226,7 +226,7 @@ export function CourseExplorer({
             key={k}
             type="button"
             onClick={() => update({ [k]: '' })}
-            className="inline-flex min-h-9 items-center gap-2 rounded-full bg-ink px-4 text-sm font-medium text-white transition-colors hover:bg-royal"
+            className="inline-flex min-h-9 items-center gap-2 rounded-full bg-brand-600 px-4 text-sm font-medium text-white transition-colors hover:bg-brand-700"
           >
             {labelOf(k, filters[k])}
             <X className="h-3.5 w-3.5" aria-hidden />
@@ -283,7 +283,7 @@ export function CourseExplorer({
       {/* Filtros em ecrã inteiro (mobile/tablet) */}
       {sheetOpen && (
         <div id={sheetId} role="dialog" aria-modal="true" aria-label="Filtros" className="fixed inset-0 z-[60] lg:hidden" data-lenis-prevent>
-          <button type="button" aria-label="Fechar filtros" onClick={() => setSheetOpen(false)} className="absolute inset-0 bg-ink/60 backdrop-blur-sm" />
+          <button type="button" aria-label="Fechar filtros" onClick={() => setSheetOpen(false)} className="absolute inset-0 bg-ink/40 backdrop-blur-sm" />
           <div className="absolute inset-x-0 bottom-0 max-h-[85svh] overflow-y-auto rounded-t-[2rem] bg-paper p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] shadow-2xl">
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-semibold text-ink">Filtros</h2>
@@ -328,7 +328,7 @@ function FilterSelect({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         className={`input-form min-h-12 cursor-pointer appearance-none rounded-full bg-[url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235b6478' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")] bg-[length:1.1rem] bg-[right_1rem_center] bg-no-repeat py-3 pr-10 ${
-          value ? 'border-ink font-semibold' : ''
+          value ? 'border-brand-500 bg-brand-50 font-semibold' : ''
         }`}
       >
         <option value="">{compact ? placeholder : `${label}: ${placeholder.toLowerCase()}`}</option>

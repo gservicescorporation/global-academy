@@ -56,7 +56,7 @@ export const SETTINGS: SettingDef[] = [
   t('Sobre', 'about_subtitle', 'Texto de apoio', 'Cursos curtos e práticos para profissionais e equipas de empresa, com certificação INEFOP.', 'textarea'),
 
   t('Chamada final', 'final_title', 'Título', 'Escolha o curso e *reserve o lugar.*', 'text', ACCENT),
-  t('Chamada final', 'final_text', 'Texto', 'Cada turma tem vagas limitadas. A inscrição fica confirmada depois do pagamento.', 'textarea'),
+  t('Chamada final', 'final_text', 'Texto', 'Cada turma tem vagas limitadas. Inscreva-se online e a nossa equipa confirma a vaga consigo.', 'textarea'),
   t('Chamada final', 'final_cta', 'Botão', 'Ver cursos'),
 
   t('Cursos', 'candidacy_title', 'Bloco de certificação — título', 'Certificação e candidatura'),

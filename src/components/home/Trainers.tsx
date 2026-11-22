@@ -15,34 +15,29 @@ export const initials = (name: string) =>
 
 export function TrainerCard({ t }: { t: Trainer }) {
   return (
-    <Tilt className="group relative h-full overflow-hidden rounded-[1.75rem] bg-paper ring-1 ring-line">
-      <div className="relative aspect-[4/5] overflow-hidden bg-ink">
+    <Tilt className="group relative h-full rounded-[1.75rem] bg-white p-3 ring-1 ring-line transition-shadow duration-500 hover:shadow-lift">
+      {/* Fotografia em arco */}
+      <div className="relative aspect-[4/5] overflow-hidden rounded-t-full rounded-b-[1.25rem] bg-brand-100">
         {t.photoUrl ? (
           <Img
             src={t.photoUrl}
             alt={`Fotografia de ${t.name}`}
             fill
-            sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
-            className="object-cover grayscale transition duration-700 ease-out-expo group-hover:scale-105 group-hover:grayscale-0"
+            sizes="(min-width: 1024px) 25vw, 50vw"
+            className="object-cover transition duration-700 ease-out-expo group-hover:scale-105"
           />
         ) : (
-          <div aria-hidden className="absolute inset-0 flex items-center justify-center">
-            <div className="grid-lines absolute inset-0" />
-            <div className="absolute -right-1/3 -bottom-1/3 h-full w-full rounded-full bg-royal/40 blur-3xl" />
-            <span className="serif-accent relative text-6xl text-white/80 sm:text-8xl">{initials(t.name)}</span>
+          <div aria-hidden className="absolute inset-0 flex items-end justify-center bg-gradient-to-b from-brand-100 to-brand-300">
+            <div className="dots absolute inset-0 opacity-70" />
+            <span className="relative mb-[18%] font-head text-5xl font-semibold tracking-tight text-white sm:text-7xl">{initials(t.name)}</span>
           </div>
         )}
-        <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-ink/90 to-transparent" />
-        <div className="absolute inset-x-0 bottom-0 p-4 text-white sm:p-6">
-          <h3 className="text-base font-semibold tracking-tight sm:text-xl">{t.name}</h3>
-          <p className="mt-1 line-clamp-2 text-xs text-white/70 sm:text-sm">{t.role}</p>
-        </div>
       </div>
-      {t.bio && (
-        <div className="hidden p-6 sm:block">
-          <p className="line-clamp-4 text-sm leading-relaxed text-tertiary">{t.bio}</p>
-        </div>
-      )}
+      <div className="px-2 pt-4 pb-2 sm:px-3">
+        <h3 className="font-head text-base leading-tight font-semibold tracking-tight text-ink sm:text-xl">{t.name}</h3>
+        <p className="mt-1 line-clamp-2 text-xs text-brand-700 sm:text-sm">{t.role}</p>
+        {t.bio && <p className="mt-3 hidden text-sm leading-relaxed text-tertiary sm:line-clamp-3">{t.bio}</p>}
+      </div>
     </Tilt>
   );
 }
@@ -55,11 +50,11 @@ export function Trainers({ trainers, title, text }: { trainers: Trainer[]; title
       <div className="container-x">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-3xl">
-            <span data-reveal="fade" className="eyebrow text-royal">
+            <span data-reveal="fade" className="eyebrow">
               Formadores
             </span>
             <SplitReveal className="display-lg mt-6 text-balance text-ink">
-              <Accent text={title} className="serif-accent text-royal" />
+              <Accent text={title} />
             </SplitReveal>
           </div>
           {text && (

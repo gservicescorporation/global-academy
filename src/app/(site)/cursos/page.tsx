@@ -90,7 +90,7 @@ export default async function CoursesPage() {
         eyebrow="Cursos"
         title={
           <>
-            Todos os cursos, <span className="serif-accent text-white/60">num só lugar.</span>
+            Todos os cursos, <span className="hl">num só lugar.</span>
           </>
         }
         text="Pesquise pelo tema ou filtre por área, modalidade, nível, data e preço. Cada curso mostra a duração, o preço e as próximas turmas."

@@ -13,9 +13,9 @@ export function formatRange(start: string, end: string) {
 }
 
 export const COURSE_STATUS = {
-  soon: { label: 'Em breve', cls: 'bg-gold-soft text-ink' },
-  open: { label: 'Inscrições abertas', cls: 'bg-accent text-ink' },
-  done: { label: 'Edição realizada', cls: 'bg-white text-tertiary ring-1 ring-line' },
+  soon: { label: 'Em breve', cls: 'bg-white text-brand-800' },
+  open: { label: 'Inscrições abertas', cls: 'bg-brand-600 text-white' },
+  done: { label: 'Edição realizada', cls: 'bg-white/90 text-tertiary' },
 } as const;
 
 export function formatPrice(n: number, currency = 'AOA') {

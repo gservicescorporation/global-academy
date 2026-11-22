@@ -36,7 +36,7 @@ export function CourseNav({ items, cta }: { items: { id: string; label: string }
                 data-nav={it.id}
                 aria-current={active === it.id ? 'location' : undefined}
                 className={`inline-flex min-h-11 items-center rounded-full px-4 text-sm font-medium transition-colors ${
-                  active === it.id ? 'bg-ink text-white' : 'text-tertiary hover:bg-background hover:text-ink'
+                  active === it.id ? 'bg-brand-600 text-white' : 'text-tertiary hover:bg-background hover:text-ink'
                 }`}
               >
                 {it.label}

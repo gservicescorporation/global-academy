@@ -7,14 +7,12 @@ import { z } from 'zod';
 import { getDb } from '@/lib/db';
 import { getSettings } from '@/lib/queries';
 import { emailLayout, emailRows, escapeHtml, sendEmail } from '@/lib/email';
-import { appyPayConfigured, createAppyPayCharge } from '@/lib/payments/appypay';
 import { absoluteUrl, formatPrice, formatRange, genReference, todayISO } from '@/lib/utils';
-import type { CourseSession, Enrollment, PaymentDetails, PaymentMethod } from '@/lib/entities';
+import type { CourseSession, Enrollment } from '@/lib/entities';
 
 const enrollSchema = z
   .object({
     sessionId: z.string().uuid('Escolha uma turma.'),
-    paymentMethodId: z.string().uuid('Escolha como vai pagar.'),
     participants: z.coerce.number({ message: 'Indique um número.' }).int('Indique um número inteiro.').min(1, 'Pelo menos 1 participante.').max(50, 'Máximo 50 por inscrição.'),
     fullName: z.string().trim().min(2, 'Indique o nome completo.').max(160),
     email: z.string().trim().email('Indique um email válido.').max(200),
@@ -49,9 +47,8 @@ export async function enroll(slug: string, _prev: FormState, fd: FormData): Prom
   const d = parsed.data;
 
   const ds = await getDb();
-  const method = (await ds.getRepository('PaymentMethod').findOne({ where: { id: d.paymentMethodId, enabled: true } })) as PaymentMethod | null;
-  if (!method) return { ok: false, errors: { paymentMethodId: 'Escolha um método de pagamento válido.' } };
 
+  // A inscrição termina aqui: fica "pendente" e a equipa contacta a pessoa para combinar o pagamento.
   let saved: Enrollment;
   try {
     // Transação com bloqueio da turma: duas inscrições em simultâneo não ultrapassam as vagas.
@@ -77,10 +74,10 @@ export async function enroll(slug: string, _prev: FormState, fd: FormData): Prom
         reference: genReference(),
         courseId: course.id,
         sessionId: session.id,
-        paymentMethodId: method.id,
+        paymentMethodId: null,
         courseTitle: course.title,
         sessionLabel: `${formatRange(session.startDate, session.endDate).full} ${session.startDate.slice(0, 4)} · ${session.location ?? 'Presencial'}`,
-        paymentMethodName: method.name,
+        paymentMethodName: '',
         fullName: d.fullName,
         email: d.email,
         phone: d.phone,
@@ -98,34 +95,12 @@ export async function enroll(slug: string, _prev: FormState, fd: FormData): Prom
     throw e;
   }
 
-  // AppyPay (Multicaixa Express / referência). Se não estiver configurado ou falhar,
-  // a inscrição fica pendente e a pessoa vê as instruções manuais do método.
-  const repo = ds.getRepository('Enrollment');
-  if ((method.type === 'express' || method.type === 'reference') && appyPayConfigured() && Number(saved.amount) > 0) {
-    try {
-      const charge = await createAppyPayCharge({
-        method: method.type,
-        amount: Number(saved.amount),
-        currency: saved.currency,
-        description: `${saved.courseTitle} (${d.participants}x) ${saved.reference}`,
-        phone: d.phone,
-        fullName: d.fullName,
-        email: d.email,
-      });
-      const details: PaymentDetails = { provider: 'appypay', chargeId: charge.chargeId, ...charge.reference };
-      await repo.update(saved.id, { paymentRef: charge.merchantTransactionId, paymentDetails: details });
-      saved.paymentDetails = details;
-    } catch (e) {
-      console.error('[appypay] falha ao criar cobrança', e);
-    }
-  }
-
-  await sendEnrollmentEmails(saved, method);
+  await sendEnrollmentEmails(saved);
   revalidatePath('/', 'layout'); // vagas atualizadas nas páginas públicas
   redirect(`/inscricao/${saved.id}`);
 }
 
-async function sendEnrollmentEmails(e: Enrollment, method: PaymentMethod) {
+async function sendEnrollmentEmails(e: Enrollment) {
   const s = await getSettings();
   const link = absoluteUrl(`/inscricao/${e.id}`);
   const rows: [string, unknown][] = [
@@ -133,22 +108,8 @@ async function sendEnrollmentEmails(e: Enrollment, method: PaymentMethod) {
     ['Curso', e.courseTitle],
     ['Turma', e.sessionLabel],
     ['Participantes', e.participants],
-    ['Total', formatPrice(e.amount, e.currency)],
-    ['Pagamento', e.paymentMethodName],
+    ['Total', Number(e.amount) > 0 ? formatPrice(e.amount, e.currency) : 'Sob consulta'],
   ];
-  const pay = e.paymentDetails?.referenceNumber
-    ? emailRows([
-        ['Entidade', e.paymentDetails.entity],
-        ['Referência de pagamento', e.paymentDetails.referenceNumber],
-        ['Montante', formatPrice(e.amount, e.currency)],
-      ])
-    : e.paymentDetails
-      ? `<p style="font-size:15px;line-height:1.6">Enviámos o pedido de pagamento para o seu Multicaixa Express. Abra a aplicação e aprove o pagamento.</p>`
-      : `${method.instructions ? `<p style="font-size:15px;line-height:1.6;white-space:pre-line">${escapeHtml(method.instructions)}</p>` : ''}${
-          method.details
-            ? `<p style="font-size:15px;line-height:1.6;white-space:pre-line;background:#f6f7fb;padding:12px 16px;border-radius:12px">${escapeHtml(method.details)}</p>`
-            : ''
-        }`;
 
   await Promise.all([
     sendEmail({
@@ -157,10 +118,9 @@ async function sendEnrollmentEmails(e: Enrollment, method: PaymentMethod) {
       subject: `Inscrição ${e.reference} — ${e.courseTitle}`,
       html: emailLayout(
         'A sua inscrição foi registada',
-        `<p style="font-size:15px;line-height:1.6">Olá ${escapeHtml(e.fullName.split(' ')[0])}, recebemos a sua inscrição. A vaga fica confirmada quando o pagamento for recebido.</p>
+        `<p style="font-size:15px;line-height:1.6">Olá ${escapeHtml(e.fullName.split(' ')[0])}, recebemos a sua inscrição. A nossa equipa vai contactá-lo nos próximos dias para confirmar a vaga e combinar o pagamento.</p>
 ${emailRows(rows)}
-<h2 style="font-size:17px;margin:28px 0 8px">Como pagar</h2>${pay}
-<p style="margin-top:28px"><a href="${escapeHtml(link)}" style="display:inline-block;background:#070b16;color:#ffffff;text-decoration:none;padding:14px 24px;border-radius:999px;font-weight:bold">Ver a inscrição</a></p>`,
+<p style="margin-top:28px"><a href="${escapeHtml(link)}" style="display:inline-block;background:#0277c3;color:#ffffff;text-decoration:none;padding:14px 24px;border-radius:999px;font-weight:bold">Ver a inscrição</a></p>`,
         s.site_name
       ),
     }),

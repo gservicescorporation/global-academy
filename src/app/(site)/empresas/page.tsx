@@ -30,16 +30,23 @@ export default async function CompaniesPage() {
 
   return (
     <main>
-      <PageHero eyebrow="Formação para empresas" title={<Accent text={s.companies_title} className="serif-accent text-white/60" />} text={s.companies_text} />
+      <PageHero eyebrow="Formação para empresas" title={<Accent text={s.companies_title} />} text={s.companies_text} />
 
       {points.length > 0 && (
         <section className="section-y bg-background">
           <div className="container-x">
             <ul className={`grid gap-4 ${points.length >= 3 ? 'md:grid-cols-3' : 'md:grid-cols-2'}`}>
               {points.map((p, i) => (
-                <li key={p} data-reveal="up" data-reveal-delay={i * 0.06} className="flex min-h-48 flex-col justify-between gap-8 rounded-[1.75rem] bg-paper p-8 ring-1 ring-line">
-                  <span className="text-sm font-semibold text-royal tabular-nums">{String(i + 1).padStart(2, '0')}</span>
-                  <span className="text-2xl leading-snug font-semibold tracking-tight text-ink">{p}</span>
+                <li
+                  key={p}
+                  data-reveal="up"
+                  data-reveal-delay={i * 0.08}
+                  className={`flex min-h-52 flex-col justify-between gap-8 rounded-[1.75rem] p-8 ${i === 1 ? 'on-blue bg-brand-600 text-white' : 'bg-white text-ink ring-1 ring-line'}`}
+                >
+                  <span className={`flex h-11 w-11 items-center justify-center rounded-2xl font-head font-bold ${i === 1 ? 'bg-white/15' : 'bg-brand-100 text-brand-700'}`}>
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                  <span className="font-head text-2xl leading-snug font-semibold tracking-tight">{p}</span>
                 </li>
               ))}
             </ul>
@@ -47,28 +54,28 @@ export default async function CompaniesPage() {
         </section>
       )}
 
-      <section className="section-y relative overflow-clip bg-ink text-white">
-        <div aria-hidden className="grid-lines pointer-events-none absolute inset-0" />
+      <section className="section-y relative overflow-clip bg-brand-50">
+        <div aria-hidden className="dots dots-fade pointer-events-none absolute inset-0" />
         <div className="container-x relative">
-          <span data-reveal="fade" className="eyebrow text-accent">
+          <span data-reveal="fade" className="eyebrow bg-white">
             Como funciona
           </span>
-          <SplitReveal className="display-lg mt-6 max-w-3xl text-balance">
-            Do pedido à formação, <span className="serif-accent text-white/60">em quatro passos.</span>
+          <SplitReveal className="display-lg mt-6 max-w-3xl text-balance text-ink">
+            Do pedido à formação, <span className="hl">em quatro passos.</span>
           </SplitReveal>
           <StepsTimeline steps={STEPS} />
         </div>
       </section>
 
-      <section id="proposta" className="section-y scroll-mt-24 bg-paper">
+      <section id="proposta" className="section-y scroll-mt-24 bg-white">
         <div className="container-x grid gap-14 lg:grid-cols-12">
           <div className="lg:col-span-5">
             <div className="lg:sticky lg:top-32">
-              <span data-reveal="fade" className="eyebrow text-royal">
+              <span data-reveal="fade" className="eyebrow">
                 Pedido de proposta
               </span>
               <SplitReveal className="display-lg mt-6 text-balance text-ink">
-                Conte-nos o que a equipa <span className="serif-accent text-royal">precisa.</span>
+                Conte-nos o que a equipa <span className="hl">precisa.</span>
               </SplitReveal>
               <p data-reveal className="mt-6 max-w-md text-lg text-tertiary">
                 Respondemos por email com uma proposta concreta. Se preferir falar primeiro:
@@ -91,13 +98,13 @@ export default async function CompaniesPage() {
               </ul>
             </div>
           </div>
-          <div data-reveal="up" className="rounded-[2rem] bg-background p-6 ring-1 ring-line sm:p-10 lg:col-span-7">
+          <div data-reveal="up" className="rounded-[2rem] bg-brand-50 p-6 ring-1 ring-line sm:p-10 lg:col-span-7">
             <ProposalForm topics={areas.map((a) => a.name)} />
           </div>
         </div>
       </section>
 
-      <PartnersMarquee items={partners} title={s.partners_title} tone="dark" />
+      <PartnersMarquee items={partners} title={s.partners_title} />
     </main>
   );
 }

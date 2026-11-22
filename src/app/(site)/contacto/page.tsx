@@ -29,7 +29,7 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
         eyebrow="Contactos"
         title={
           <>
-            Fale com <span className="serif-accent text-white/60">a academia.</span>
+            Fale com <span className="hl">a academia.</span>
           </>
         }
         text={s.contact_intro}
@@ -42,7 +42,7 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
               const Icon = i.icon;
               const inner = (
                 <>
-                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-ink text-white">
+                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-brand-100 text-brand-700">
                     <Icon className="h-5 w-5" aria-hidden />
                   </span>
                   <span className="min-w-0 flex-1">

@@ -1,13 +1,16 @@
 import { Fragment } from 'react';
 
-/** Mostra em serif itálico o texto entre *asteriscos* (convenção usada nos títulos do painel). */
-export function Accent({ text, className = 'serif-accent' }: { text?: string | null; className?: string }) {
+/**
+ * Texto entre *asteriscos* (convenção dos títulos no painel) ganha o marcador azul (.hl),
+ * desenhado pelo GSAP quando o título entra no ecrã.
+ */
+export function Accent({ text, className = '' }: { text?: string | null; className?: string }) {
   if (!text) return null;
   return (
     <>
       {text.split(/(\*[^*]+\*)/g).map((part, i) =>
         part.startsWith('*') && part.endsWith('*') && part.length > 2 ? (
-          <span key={i} className={className}>
+          <span key={i} className={`hl ${className}`}>
             {part.slice(1, -1)}
           </span>
         ) : (
