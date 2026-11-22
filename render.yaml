@@ -1,0 +1,54 @@
+services:
+  - type: web
+    name: global-academy
+    runtime: node
+    plan: starter
+    region: frankfurt
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    autoDeploy: true
+    disk:
+      name: uploads
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      - key: DATABASE_URL
+        sync: false
+      - key: DB_SYNC
+        value: "false"
+      - key: DB_POOL_MAX
+        value: "5"
+      - key: AUTH_SECRET
+        sync: false
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: UPLOAD_DIR
+        value: /var/data/uploads
+      - key: UPLOADTHING_TOKEN
+        sync: false
+      - key: SITE_URL
+        sync: false
+      - key: GATEWAY_API_URL
+        value: https://gwy-api.appypay.co.ao/v2.0
+      - key: APPY_CLIENT_ID
+        sync: false
+      - key: APPY_CLIENT_SECRET
+        sync: false
+      - key: APPY_RESOURCE
+        sync: false
+      - key: APPYPAY_GPO_ID
+        sync: false
+      - key: APPYPAY_REF_ID
+        sync: false
+      - key: APPYPAY_MERCHANT_IDENTIFIER
+        sync: false
+      - key: APPYPAY_API_KEY
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: EMAIL_FROM
+        sync: false

@@ -1,0 +1,14 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: globalacademy
+      POSTGRES_PASSWORD: globalacademy
+      POSTGRES_DB: globalacademy
+    ports:
+      - "5432:5432"
+    volumes:
+      - globalacademy_pg:/var/lib/postgresql/data
+volumes:
+  globalacademy_pg:
